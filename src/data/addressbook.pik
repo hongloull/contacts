@@ -1,0 +1,74 @@
+(lp0
+(dp1
+S'phone'
+p2
+S'123456'
+p3
+sS'name'
+p4
+S'Hank'
+p5
+sS'address'
+p6
+S'Room 101'
+p7
+sa(dp8
+g2
+S''
+p9
+sg4
+S'Karl'
+p10
+sg6
+S'Room 102'
+p11
+sa(dp12
+g2
+S'562378'
+p13
+sg4
+S'Tom'
+p14
+sg6
+S'Room 103'
+p15
+sa(dp16
+g2
+S'635623'
+p17
+sg4
+S'Xing'
+p18
+sg6
+g9
+sa(dp19
+g2
+S'895612'
+p20
+sg4
+S'Cui'
+p21
+sg6
+S'Room 105'
+p22
+sa(dp23
+g2
+S'556278'
+p24
+sg4
+S'Daniel'
+p25
+sg6
+S'Room 106'
+p26
+sa(dp27
+g2
+S'632675'
+p28
+sg4
+S'Daniel'
+p29
+sg6
+S'Room 107'
+p30
+sa.

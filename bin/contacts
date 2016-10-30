@@ -1,0 +1,123 @@
+#!/usr/bin/env python
+
+import argparse
+
+from contacts.session import Session
+
+
+class ContactsApp(object):
+    """
+    Description:
+        Command line tool to serialise/deserialise input file. The operation
+        steps looks as below:
+            1) Read/deserialise the input file.
+                It supports three kinds of formats: pickle, csv and yaml.
+            2) Write/serialise to the output file.
+                It supports the same three formats as reading. But user can
+                combine the formats, for example, reading csv format and then
+                writing as yaml. If "outputFile" specified, then it would do
+                serialisation operation, else it would skip this step and do
+                display operation(described by step 3).
+            3) Display the deserialised data as human readable format.
+                There are two kinds of displaying modes, one is "text" and the
+                other is "html". The "text" mode calls Terminal command "cat" to
+                display in Terminal. The "html" mode calls web browser to open a
+                html file.
+
+    Requirements:
+        Linux Operation System(Tested on CentOs7)
+        Python 2.7+<3.0
+        YAMl
+
+    Install:
+        python setup.py install
+
+    Usage:
+        # deserialise input file and display it
+        contacts -d <displayer> -i <input file> -r <input file format>
+
+        # serialise input file and save as another output file
+        contacts -d <displayer> -i <input file> -o <output file> -r <input
+        file format> -w <output file format>
+
+    Usage Examples:
+        # The example files used here(addressbook.*) are located in the
+        # "src/data" directory or "installedDir/data" directory.
+
+        # deserialise by Python native pickle module and call web browser to
+        # show the result.
+        contacts -d html -i src/data/addressbook.pik -r pickle
+
+        # deserialise a yaml format file and show the result in Terminal,
+        # if <displayer> is not specified, contacts would uses Terminal command
+        # "cat" as default displayer.
+        contacts -i src/data/addressbook.yaml -r yaml
+
+        # serialise yaml format file depend on input csv file.
+        contacts -i src/data/addressbook.csv -r csv -o
+        /usr/tmp/addressbook.yaml -w yaml
+
+        # add options during serialisation(specified delimiter="\"" during
+        # csv writing, default is "\t") as below.
+        contacts -i src/data/addressbook.csv -r csv -o
+        /usr/tmp/addressbook.csv -w csv -wd "delimiter=\""
+
+        # query help document
+        contacts --help
+    """
+
+    @staticmethod
+    def _confArgs():
+        parser = argparse.ArgumentParser(description='Argument parser for '
+                                                     'contacts commad line '
+                                                     'tool')
+
+        parser.add_argument('-d', '--displayer', action='store',
+                            dest='displayerName',
+                            help='Specify the displayer, it should be one of '
+                                 '"{0}", default is "{1}".'.format(
+                                ', '.join(Session.DISPLAYER_MAPS),
+                                Session.DEFAULT_DISPLAYER_NAME),
+                            type=str, default=Session.DEFAULT_DISPLAYER_NAME)
+        parser.add_argument('-i', '--inputFile', action='store',
+                            help='The input file to read(deserialise).',
+                            dest='inputFile', type=str)
+        parser.add_argument('-o', '--outputFile', action='store',
+                            help='The output file to write(serialise).',
+                            dest='outputFile', type=str)
+        parser.add_argument('-r', '--reader', action='store',
+                            help='Specify the reader, it should be one of "{'
+                                 '0}", default is "{1}".'.format(
+                                ', '.join(Session.READER_MAPS),
+                                Session.DEFAULT_READER_NAME),
+                            dest='readerName', type=str,
+                            default=Session.DEFAULT_READER_NAME)
+        parser.add_argument('-w', '--writer', action='store',
+                            help='Specify the serialisation format, it should '
+                                 'be one of "{0}", default is "{1}".'.format(
+                                ', '.join(Session.WRITER_MAPS),
+                                Session.DEFAULT_WRITER_NAME),
+                            dest='writerName', type=str,
+                            default=Session.DEFAULT_WRITER_NAME)
+        parser.add_argument('-ro', '--readOptions', action='store',
+                            help='Specify the options during reader\'s '
+                                 'deserialising, e.g. set "delimiter=\t" for '
+                                 '"csv" reader.',
+                            dest='readOptions', type=str)
+        parser.add_argument('-wo', '--writeOptions', action='store',
+                            help='Specify the options during writer\'s '
+                                 'serialising, e.g. set "protocol=1" for '
+                                 '"pickle" writer.',
+                            dest='writeOptions', type=str)
+        return vars(parser.parse_args())
+
+    def __init__(self):
+        kwargs = ContactsApp._confArgs()
+        self._session = Session(**kwargs)
+
+    def main(self):
+        self._session.main()
+
+
+if __name__ == '__main__':
+    ContactsApp().main()
